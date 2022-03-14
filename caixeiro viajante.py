@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Mar 13 19:55:47 2022
-
 @author: Johann
 """
 
@@ -9,6 +8,7 @@ import matplotlib.pyplot as plt
 import random
 from random import randint
 import numpy as np
+import pandas as pd
 import math 
 
 #Criando os vetores das coordenadas das cidades
@@ -76,5 +76,23 @@ def populacao_inicial(qtd_pop):
         individuo = []
     return populacao
 
-teste = populacao_inicial(20)
-teste_fit = fitness(teste)
+teste_pop = populacao_inicial(20)
+teste_fit = fitness(teste_pop)
+
+#Ordena a população pelo custo total
+def ordena(fit, pop):
+    teste = list(zip(teste_fit, teste_pop))
+    teste_ord = sorted(teste, reverse=False)   
+    return teste_ord
+
+ordenado_by_fit = ordena(teste_fit, teste_pop)
+
+def crossover():
+    
+    return
+
+def mutacao():
+    
+    return
+
+## Fazer o algoritmo 
