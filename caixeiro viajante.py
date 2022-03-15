@@ -15,7 +15,8 @@ import math
 def cidades(qnt_citys):
     x = []
     y = []
-    seed = random.seed(26)
+    #seed = random.seed(26)
+    seed = random.seed(5)
     for i in range(qnt_citys):
         x.append(random.randrange(0, qnt_citys))
         y.append(random.randrange(0, qnt_citys))
@@ -26,7 +27,7 @@ def plot_all(seq):
     for indice in range(0, len(seq)):
         x_plot = []
         y_plot = []
-        for i in range(0, 100):
+        for i in range(0, quantidade_citys):
             x_plot.append(x[seq[indice][i]])
             y_plot.append(y[seq[indice][i]])
         plt.plot(x_plot, y_plot)
@@ -35,14 +36,15 @@ def plot_all(seq):
 def plot_best(individuo):
     x_plot = []
     y_plot = []
-    for i in range(0, 100):
+    for i in range(0, quantidade_citys):
         x_plot.append(x[individuo[i]])
         y_plot.append(y[individuo[i]])
     plt.plot(x_plot, y_plot)
     plt.show()
 
 #inicia as cidades
-x, y = cidades(100)
+quantidade_citys = 10
+x, y = cidades(quantidade_citys)
 print("\n Grafico inicial das cidades: ")
 plt.plot(x,y)
 plt.show()
@@ -57,7 +59,7 @@ def fitness(seq):
     fit = 0
     vet_fit = []
     for indice in range(0, len(seq)):
-        for i in range(1, 100, 2):
+        for i in range(1, quantidade_citys, 2):
             fit += distancia(x[seq[indice][i]], y[seq[indice][i]], x[seq[indice][i-1]], y[seq[indice][i-1]])
         vet_fit.append(fit)
         fit = 0
@@ -68,15 +70,16 @@ def populacao_inicial(qtd_pop):
     individuo = []
     populacao = []
     for i in range(qtd_pop):
-        while len(individuo) != 100:
-            random_int = randint(0, 99)
+        while len(individuo) != quantidade_citys:
+            random_int = randint(0, quantidade_citys-1)
             if random_int not in individuo:
                 individuo.append(random_int)
         populacao.append(individuo)
         individuo = []
     return populacao
 
-teste_pop = populacao_inicial(20)
+tamanho_pop = 2
+teste_pop = populacao_inicial(tamanho_pop)
 teste_fit = fitness(teste_pop)
 
 #Ordena a população pelo custo total
@@ -87,12 +90,98 @@ def ordena(fit, pop):
 
 ordenado_by_fit = ordena(teste_fit, teste_pop)
 
-def crossover():
-    
-    return
 
-def mutacao():
+def crossover(pop):
+    nova_pop = []
+    fit_pop = fitness(pop)
+    ordenado_by_fit = ordena(fit_pop, pop)
+    if (len(pop) == 0):
+        print("aaaaaaaaaaaahhhhhhhhhhhh")
+    for i in range(0, len(pop), 2):
+        pai1 = []
+        pai2 = []
+        crom_filho = []
+        filho1 = []
+        filho2 = []
+        pai1 = ordenado_by_fit[i][1]
+        if (i < (len(pop)-1)):
+            pai2 = ordenado_by_fit[i+1][1]
+        else:
+            pai2 = ordenado_by_fit[i-1][1]
+        for x in range(quantidade_citys):
+             if random.random() < 0.7:
+                 crom_filho.append("0")
+             else:
+                crom_filho.append("1")
+        # primeiro filho
+        for j in range(quantidade_citys):
+            #erda pai 1 
+            if crom_filho[j] == "1":
+                filho1.append(pai1[j])
+            #erda pai 2
+            else:
+                filho1.append(0)
+        for j in range(quantidade_citys):
+            e = 0
+            if filho1[j] == 0:
+                while (e != quantidade_citys):
+                    if pai2[e] not in filho1:
+                        filho1[j] = pai2[e]
+                        e = quantidade_citys
+                    else:
+                        e += 1
+        filho1 = mutacao(filho1)
+        
+        # segundo filho
+        for j in range(quantidade_citys):
+            if crom_filho[j] == "1":
+                #erda do pai 2
+                filho2.append(pai2[j])
+            else:
+                filho2.append(0)
+        for j in range(quantidade_citys):
+            e = 0
+            if filho2[j] == 0:
+                while (e != quantidade_citys):
+                    if pai1[e] not in filho2:
+                        filho2[j] = pai1[e]
+                        e = quantidade_citys
+                    else:
+                        e += 1
+        filho2 = mutacao(filho2)
+        nova_pop.append(filho1)
+        nova_pop.append(filho2)
     
-    return
+    fit_novo = fitness(nova_pop)
+    nova_ord = ordena(fit_novo, nova_pop)
+    return nova_ord
 
+def mutacao(filho):
+    taxa_mutacao = random.random()
+    quant = quantidade_citys
+    filho_novo = filho
+    if taxa_mutacao < 0.3:
+        indice1 = randint(0, (quant-1))
+        indice2 = randint(0, (quant-1))
+        temp = filho_novo[indice1]
+        filho_novo[indice1] = filho_novo[indice2]
+        filho_novo[indice2] = temp
+    return filho_novo
+
+teste = crossover(teste_pop)
+teste_mut = mutacao(teste_pop[0])
+
+
+"""
 ## Fazer o algoritmo 
+def resolver():
+    geracoes = 20
+    pop = crossover()
+    for i in range(geracoes):
+        populacao = []
+        for j in range(tamanho_pop):
+            populacao.append(pop[j][1])
+        resultado = crossover()
+        #if
+    
+    return resultado"""
