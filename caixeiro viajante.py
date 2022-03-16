@@ -69,6 +69,19 @@ def populacao_inicial(qtd_pop):
         individuo = []
     return populacao
 
+#Passa o vetor ordenado por fit
+def nova_pop(pop):
+    populacao = pop
+    tam = int(len(populacao)/2)
+    for i in range(tam, len(populacao)):
+        populacao.pop(tam)
+    nova_populacao = populacao
+    return nova_populacao
+
+def novo_cromossomo():
+    
+    return
+
 #Ordena a população pelo custo total
 def ordena(fit, pop):
     aa = list(zip(fit, pop))
@@ -133,8 +146,8 @@ class lala():
             nova_pop.append(filho1)
             nova_pop.append(filho2)
             
-            fit_novo = fitness(nova_pop)
-            nova_ord = ordena(fit_novo, nova_pop)
+        fit_novo = fitness(nova_pop)
+        nova_ord = ordena(fit_novo, nova_pop)
         return nova_ord
     
     def mutacao(filho):
@@ -147,8 +160,10 @@ class lala():
             filho_novo[indice1], filho_novo[indice2] = filho_novo[indice2], filho_novo[indice1]
         return filho_novo
 
+
 melhores = []
 def resolver(pop):
+    best_all = 500000000000
     geracoes = 200
     melhor = [0][0]
     pop_cross = lala.crossover(pop)
@@ -162,6 +177,9 @@ def resolver(pop):
             melhor = resultado[0][0]
             melhores.append(melhor)
         pop_cross = resultado
+        if best_all > resultado[0][0]:
+            best_all = resultado[0][0]
+    plot_best(resultado[0][1])
     return resultado
 
 #inicia as cidades
@@ -180,3 +198,5 @@ teste_cross = lala.crossover(teste_pop)
 
 finalmente = resolver(teste_pop)
 plot_best(finalmente[0][1])
+
+teste = nova_pop(ordenado_by_fit[:])
