@@ -75,12 +75,26 @@ def nova_pop(pop):
     tam = int(len(populacao)/2)
     for i in range(tam, len(populacao)):
         populacao.pop(tam)
-    nova_populacao = populacao
+    nova_populacao = novo_cromossomo(populacao[:])
+    #nova_populacao = populacao
     return nova_populacao
 
-def novo_cromossomo():
-    
-    return
+def novo_cromossomo(pop):
+    individuo = []
+    populacao = pop
+    populacao_temp = []
+    for i in range(len(pop), tamanho_pop):
+        while len(individuo) != quantidade_citys:
+            random_int = randint(0, quantidade_citys-1)
+            if random_int not in individuo:
+                individuo.append(random_int)
+        populacao_temp.append(individuo)
+        individuo = []
+    bb = fitness(populacao_temp)
+    zip_temp = list(zip(bb, populacao_temp))
+    for i in range(0, len(zip_temp)):
+        populacao.append(zip_temp[i])
+    return sorted(populacao, reverse=False) 
 
 #Ordena a população pelo custo total
 def ordena(fit, pop):
@@ -160,11 +174,11 @@ class lala():
             filho_novo[indice1], filho_novo[indice2] = filho_novo[indice2], filho_novo[indice1]
         return filho_novo
 
-
 melhores = []
+aa = [1]
 def resolver(pop):
     best_all = 500000000000
-    geracoes = 200
+    geracoes = 20
     melhor = [0][0]
     pop_cross = lala.crossover(pop)
     for i in range(geracoes):
@@ -179,7 +193,9 @@ def resolver(pop):
         pop_cross = resultado
         if best_all > resultado[0][0]:
             best_all = resultado[0][0]
-    plot_best(resultado[0][1])
+            aa[0] = resultado[0]
+            print(best_all)
+    plot_best(aa[0][1])
     return resultado
 
 #inicia as cidades
@@ -191,12 +207,11 @@ plt.show()
 
 tamanho_pop = 20
 teste_pop = populacao_inicial(tamanho_pop)
-teste_fit = fitness(teste_pop)
+teste_fit = fitness(teste_pop[:])
 
-ordenado_by_fit = ordena(teste_fit, teste_pop)
-teste_cross = lala.crossover(teste_pop)
+ordenado_by_fit = ordena(teste_fit[:], teste_pop[:])
+teste_cross = lala.crossover(teste_pop[:])
 
-finalmente = resolver(teste_pop)
-plot_best(finalmente[0][1])
+finalmente = resolver(teste_pop[:])
 
-teste = nova_pop(ordenado_by_fit[:])
+teste = nova_pop(ordenado_by_fit[:]) 
